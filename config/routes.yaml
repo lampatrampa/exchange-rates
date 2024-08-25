@@ -1,0 +1,4 @@
+controllers_project:
+  resource: ../src/Exchange/Controller/
+  type: attribute
+  prefix: /api/v1

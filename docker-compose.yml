@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+
+  exchange_rates_php:
+    container_name: exchange_rates_php
+    image: thecodingmachine/php:8.2-v4-fpm
+    working_dir: /app
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - '.:/app:cached'
+    depends_on:
+      exchange_rates_rabbitmq:
+        condition: service_healthy
+      exchange_rates_redis:
+        condition: service_healthy
+    environment:
+      PHP_EXTENSION_AMQP: 1
+      PHP_EXTENSION_YAML: 1
+      PHP_EXTENSION_INTL: 1
+      PHP_INI_UPLOAD_MAX_FILESIZE: 256m
+      PHP_INI_POST_MAX_SIZE: 256m
+      PHP_INI_MEMORY_LIMIT: 256m
+      PHP_INI_APC__ENABLE_CLI: 1
+
+  exchange_rates_rabbitmq:
+    container_name: exchange_rates_rabbitmq
+    image: rabbitmq:management
+    hostname: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    healthcheck:
+      test: [ 'CMD', 'rabbitmqctl', 'node_health_check' ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  exchange_rates_nginx:
+    container_name: exchange_rates_nginx
+    image: nginx:alpine
+    ports:
+      - '8088:80'
+    volumes:
+      - .:/app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - exchange_rates_php
+
+  exchange_rates_redis:
+    image: redis:7.0.0
+    container_name: exchange_rates_redis
+    command: redis-server --requirepass 123456 --maxmemory 300mb --maxmemory-policy volatile-lru
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5

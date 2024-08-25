@@ -1,0 +1,28 @@
+framework:
+  messenger:
+    buses:
+      messenger.bus.default:
+        middleware:
+          - App\Core\MessageMiddleware\ValidationMiddleware
+
+    serializer:
+      default_serializer: 'messenger.transport.native_php_serializer'
+
+    transports:
+
+      async:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        options:
+          persistent: true
+          exchange:
+            type: direct
+            name: default
+          queues:
+            default: true
+        retry_strategy:
+          max_retries: 3
+          delay: 60000
+          max_delay: 60000
+
+    routing:
+      App\Exchange\Message\FetchHistoricalRateDto: async

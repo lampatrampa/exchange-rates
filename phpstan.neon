@@ -1,0 +1,13 @@
+parameters:
+    level: 9
+    paths:
+      - src
+    checkImplicitMixed: true
+    checkBenevolentUnionTypes: true
+    polluteScopeWithLoopInitialAssignments: true
+    polluteScopeWithAlwaysIterableForeach: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    reportAlwaysTrueInLastCondition: true
+    reportAnyTypeWideningInVarTag: true
+includes:
+ - phar://phpstan.phar/conf/bleedingEdge.neon

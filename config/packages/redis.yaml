@@ -1,0 +1,10 @@
+snc_redis:
+  clients:
+    #domains
+    cache:
+      type: phpredis
+      alias: cache
+      dsn: '%env(REDIS_CACHE_DSN)%'
+      logging: false
+      options:
+        read_write_timeout: -1

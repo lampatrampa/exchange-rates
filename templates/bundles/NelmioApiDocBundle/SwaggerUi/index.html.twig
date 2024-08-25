@@ -1,0 +1,46 @@
+{# templates/bundles/NelmioApiDocBundle/SwaggerUi/index.html.twig #}
+
+{#
+To avoid a "reached nested level" error an exclamation mark `!` has to be added
+See https://symfony.com/blog/new-in-symfony-3-4-improved-the-overriding-of-templates
+#}
+
+{% extends '@!NelmioApiDoc/SwaggerUi/index.html.twig' %}
+
+{#
+Change swagger UI configuration
+All parameters are explained on Swagger UI website:
+https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+#}
+
+    {% block stylesheets %}
+        {{ nelmioAsset(assets_mode, 'swagger-ui/swagger-ui.css') }}
+        <style>
+            .opblock-description table tbody tr td,
+            .opblock-description table tbody tr td:first-of-type
+            {
+                padding: 10px;
+            }
+            .opblock-description table {
+                border-color: #fafafa;
+                max-width: 80%;
+            }
+        </style>
+    {% endblock stylesheets %}
+
+{% block svg_icons %}
+{% endblock %}
+
+{% block header_block %}
+
+{% endblock %}
+
+{% block swagger_initialization %}
+    <script type="text/javascript">
+      window.onload = loadSwaggerUI({
+        defaultModelsExpandDepth: -1,
+        deepLinking: true,
+        layout: "BaseLayout"
+      });
+    </script>
+{% endblock %}
